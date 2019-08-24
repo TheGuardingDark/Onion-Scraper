@@ -1,0 +1,13 @@
+<h1>Real News or The Onion?</h1>
+<div class="scraper">
+    {{#if articles}}
+        <ul>
+            {{#each articles}}
+                {{> article-block}}
+            {{/each}}
+        </ul>
+    {{else}}
+        <button><a class="btn scrape" data-id="{{id}}" href="/scrape">Scrape for Articles</a></button>
+    {{/if}}
+</div>
+
