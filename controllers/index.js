@@ -66,49 +66,67 @@ router.get("/scrape", function(req, res) {
       var hbsObject = {articles: dbArticle}
       res.render("/", hbsObject)
     })
-    .catch(function(err) {
-      res.json(err)
-    });
-    // TODO: Finish the route so it grabs all of the articles
+    .catch(err => res.json(err))
+  });
+
+  //route to add new note to article
+  router.post('/articles/:id', function(req, res) {
+    db.Note.create(req.body)
+    .then(note => db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {note: note}}, {new: true})).then(() => res.redirect('/articles'))
+    .catch(err => res.json(err))
   });
   
-  // Route for grabbing a specific Article by id, populate it with it's note
+  // Route for grabbing a specific Article by id, with its note
   router.get("/notes/:id", function(req, res) {
     db.Article.findOne({_id: req.params.id})
     .populate("note")
     .then(function(dbArticle) {
-      let note = article.note
+      let note = dbArticle.note
       var hbsObject = {noteBody: note}
       res.render('note', hbsObject)
     })
-    .catch(function(err) {
-      res.json(err)
-    });
-    // TODO
-    // ====
-    // Finish the route so it finds one article using the req.params.id,
-    // and run the populate method with "note",
-    // then responds with the article with the note included
+    .catch(err => res.json(err))
   });
-  
-  // Route for saving/updating an Article's associated Note
-  router.post("/articles/:id", function(req, res) {
-    db.Note.create(req.body) 
-    .then(function(dbNote) {
-      return db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {note: dbNote}}, {new: true});
-    })
-    .then(function(dbArticle) {
-      res.redirect("/articles")
-    })
-    .catch(function(err) {
-      res.json(err)
-    })
-    // TODO
-    // ====
-    // save the new note that gets posted to the Notes collection
-    // then find an article from the req.params.id
-    // and update it's "note" property with the _id of the new note
+
+  //route to save article
+  router.get('/saved/:id', (req, res) => {
+    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: true}}, {new: true})
+    .then( () => res.redirect('/articles'))
+    .catch(err => res.json(err));
   });
+
+  //route to remove article from saved
+  router.get('/remove/:id', (req, res) => {
+    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: false}}, {new: true})
+    .then(() => res.redirect('/articles'))
+    .catch(err => res.json(err));
+  });
+
+
+//route to grab all saved articles
+  router.get('/saved', (req, res) => {
+    db.Article.find({saved: true})
+    .then(result => {
+      var hbsObject = {saved: result}
+      res.render('saved', hbsObject);
+    })
+    .catch(err => res.json(err))
+  });
+
+  //route to delete an article's note
+  router.get('/delete/note/:id', (req, res) => {
+    db.Note.findByIdAndRemove(req.params.id)
+    .then(() => res.redirect('/articles'))
+    .catch(err => res.json(err))
+  });
+
+  //route to delete article
+  router.get('/article/delete/:id', (req, res) => {
+    db.Article.findByIdAndRemove(req.params.id)
+    .then(() => res.redirect('/saved'))
+    .catch(err => res.json(err))
+  });
+
   
 
   module.exports = router;
