@@ -64,7 +64,7 @@ router.get("/scrape", function(req, res) {
     .populate('note')
     .then(function(dbArticle) {
       var hbsObject = {articles: dbArticle}
-      res.render("/", hbsObject)
+      res.render("index", hbsObject)
     })
     .catch(err => res.json(err))
   });
@@ -72,17 +72,19 @@ router.get("/scrape", function(req, res) {
   //route to add new note to article
   router.post('/articles/:id', function(req, res) {
     db.Note.create(req.body)
-    .then(note => db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {note: note}}, {new: true})).then(() => res.redirect('/articles'))
+    .then(note => db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {note: note}}, {new: true})).then(() => {
+      res.redirect('/articles')
+    })
     .catch(err => res.json(err))
   });
   
   // Route for grabbing a specific Article by id, with its note
   router.get("/notes/:id", function(req, res) {
-    db.Article.findOne({_id: req.params.id})
+    db.Article.findById({_id: req.params.id})
     .populate("note")
     .then(function(dbArticle) {
       let note = dbArticle.note
-      var hbsObject = {noteBody: note}
+      var hbsObject = {title: note.title, body: note.body}
       res.render('note', hbsObject)
     })
     .catch(err => res.json(err))
@@ -90,14 +92,14 @@ router.get("/scrape", function(req, res) {
 
   //route to save article
   router.get('/saved/:id', (req, res) => {
-    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: true}}, {new: true})
+    db.Article.findOneAndUpdate(req.params.id, {$set: {saved: true}}, {new: true})
     .then( () => res.redirect('/articles'))
     .catch(err => res.json(err));
   });
 
   //route to remove article from saved
   router.get('/remove/:id', (req, res) => {
-    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: false}}, {new: true})
+    db.Article.findOneAndUpdate(req.params.id, {$set: {saved: false}}, {new: true})
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err));
   });
@@ -107,7 +109,7 @@ router.get("/scrape", function(req, res) {
   router.get('/saved', (req, res) => {
     db.Article.find({saved: true})
     .then(result => {
-      var hbsObject = {saved: result}
+      var hbsObject = {article: result}
       res.render('saved', hbsObject);
     })
     .catch(err => res.json(err))

@@ -32,6 +32,9 @@ app.use(routes);
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape" 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 // Start the server
 app.listen(PORT, function() {
