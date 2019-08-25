@@ -1,9 +1,34 @@
+
+<div class="article">
+
 <li>
     <p class="articleTitle" data-id='{{id}}'>{{title}}</p>
     <img src="{{img}}" />
     <a href="{{link}}">Go to Article</a>
-    
-    <button class="saveArt" data-id="{{id}}" data-newsave="{{saved}}">Save Article</button>
+    <button class="addNote">Add Comment</button>
     <button class="delete" data-id="{{id}}">Delete Article</button>
-    <button data-title="{{title}}" data-content="" class="note" data-id="{{id}}">Add Comment</button>
+        {{#if saved}}
+            <button><a class="removeArticle" href="/remove/{{_id}}">Remove From Saved</a></button>
+        {{else}}
+    <button><a class="save" data-id="{{id}}" href="/saved/{{_id}}">Save Article</a></button>
 </li>
+
+</div>
+    <div class="createNote">
+        <span class="noteTitle">{{title}}<i class="close">x</i></span>
+        <form action="/articles/{{_id}}" method="POST">
+            <div class="input-title">
+                <input placeholder="Note Title" id="noteTitle" type="text" name="title">
+            </div>
+            <div class="input-note">
+                <textarea placeholder="Comment" id="content-data" class="textarea" name="message"></textarea>
+            </div>
+            <button class="sbmt" type="submit">Save Note</button>
+
+        {{#if note}}
+            <br>
+            <br>
+            <a href='/notes/{{_id}}' class="viewNote">See Notes</a>
+        {{/if}}
+        </form>
+    </div>
