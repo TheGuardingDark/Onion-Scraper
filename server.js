@@ -1,6 +1,9 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+
+require('dotenv').config()
 
 const PORT = process.env.PORT || 3000;
 
@@ -29,8 +32,8 @@ app.use(routes);
 
 
 // Connect to the Mongo DB
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://https://still-wave-49200.herokuapp.com/" 
-mongoose.connect(MONGODB_URI);
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape" 
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
