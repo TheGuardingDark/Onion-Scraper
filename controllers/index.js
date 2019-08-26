@@ -92,7 +92,7 @@ router.get("/scrape", function(req, res) {
     .then(function(dbArticle) {
       let note = dbArticle.note
       let article = dbArticle
-      var hbsObject = {arttitle: article.title, title: note.title, body: note.body}
+      var hbsObject = {arttitle: article.title, title: note.title, body: note.body, id: note._id}
       res.render('note', hbsObject)
     })
     .catch(err => res.json(err))
@@ -124,14 +124,14 @@ router.get("/scrape", function(req, res) {
   });
 
   //route to delete an article's note
-  router.delete('/delete/note/:id', (req, res) => {
+  router.get('/note/delete/:id', (req, res) => {
     db.Note.findByIdAndRemove(req.params.id)
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err))
   });
 
   //route to delete article
-  router.delete('/article/delete/:id', (req, res) => {
+  router.get('/article/delete/:id', (req, res) => {
     db.Article.findByIdAndRemove(req.params.id)
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err))
