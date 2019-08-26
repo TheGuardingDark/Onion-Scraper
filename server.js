@@ -32,12 +32,17 @@ app.use(routes);
 
 
 // Connect to the Mongo DB
+mongoose.Promise = Promise;
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrape" 
 mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 
-mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
+
+const db = mongoose.connection
+
+db.on('error', err => console.log('Mongoose connection error: ${err}'))
+db.once('open', () => console.log('Connected to MongoDB'))
 
 // Start the server
 app.listen(PORT, function() {
