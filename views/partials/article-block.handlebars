@@ -4,6 +4,7 @@
       <div class="card-body">
         <h5 class="card-title" data-id="{{this._id}}">{{title}}</h5>
         <a href="{{link}}" class="btn btn-primary">Go to Article</a>
+        <a href="/article/delete/{{this._id}}" class="btn btn-primary">Delete Article</a>
 
         {{#if saved}}
             <a class="btn btn-primary" href="/remove/{{this._id}}">Remove From Saved</a>

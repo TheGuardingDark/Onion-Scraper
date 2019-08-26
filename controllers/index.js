@@ -124,16 +124,16 @@ router.get("/scrape", function(req, res) {
   });
 
   //route to delete an article's note
-  router.get('/delete/note/:id', (req, res) => {
-    db.Note.remove(req.params.id)
+  router.delete('/delete/note/:id', (req, res) => {
+    db.Note.findByIdAndRemove(req.params.id)
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err))
   });
 
   //route to delete article
-  router.get('/article/delete/:id', (req, res) => {
-    db.Article.remove(req.params.id)
-    .then(() => res.redirect('/saved'))
+  router.delete('/article/delete/:id', (req, res) => {
+    db.Article.findByIdAndRemove(req.params.id)
+    .then(() => res.redirect('/articles'))
     .catch(err => res.json(err))
   });
 
