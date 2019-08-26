@@ -1,34 +1,39 @@
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title" data-id="{{this._id}}">{{title}}</h5>
+        <a href="{{link}}" class="btn btn-primary">Go to Article</a>
 
-<div class="article">
-
-<li>
-    <p class="articleTitle" data-id='{{id}}'>{{title}}</p>
-    <img src="{{img}}" />
-    <a href="{{link}}">Go to Article</a>
-    <button class="delete" data-id="{{id}}">Delete Article</button>
         {{#if saved}}
-            <button><a class="removeArticle" href="/remove/{{_id}}">Remove From Saved</a></button>
+            <a class="btn btn-primary" href="/remove/{{this._id}}">Remove From Saved</a>
         {{else}}
-    <button><a class="save" data-id="{{id}}" href="/saved/{{_id}}">Save Article</a></button>
+            <a class="btn btn-primary" data-id="{{this._id}}" href="/saved/{{this._id}}">Save Article</a></button>
         {{/if}}
-</li>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="createNote">
+                    <form action="/articles/{{_id}}" method="POST">
+                    <div class="input-title">
+                        <input placeholder="Note Title" id="noteTitle" type="text" name="title">
+                    </div>
+                    <div class="input-note">
+                        <textarea placeholder="Comment" id="content-data" class="textarea" name="body"></textarea>
+                    </div>
+                        <button class="sbmt" type="submit">Save Note</button>
 
-    <div class="createNote">
-        {{!-- <span class="noteTitle">{{title}}</span> --}}
-        <form action="/articles/{{_id}}" method="POST">
-            <div class="input-title">
-                <input placeholder="Note Title" id="noteTitle" type="text" name="title">
+                    {{#if note}}
+                        <br>
+                        <br>
+                        <a href='/articles/{{_id}}' class="viewNote">See Notes</a>
+                    {{/if}}
+                    </form>
+               </div>
             </div>
-            <div class="input-note">
-                <textarea placeholder="Comment" id="content-data" class="textarea" name="body"></textarea>
-            </div>
-            <button class="sbmt" type="submit">Save Note</button>
-
-        {{#if note}}
-            <br>
-            <br>
-            <a href='/notes/{{_id}}' class="viewNote">See Notes</a>
-        {{/if}}
-        </form>
+        </div>
     </div>
 </div>

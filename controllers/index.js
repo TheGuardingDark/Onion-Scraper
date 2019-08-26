@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const cheerio = require("cheerio");
-
+// const atob = require("atob");
+// const Blob = require("blob");
 const db = require("../models");
 
 
@@ -24,21 +25,26 @@ router.get("/scrape", function(req, res) {
      
       var $ = cheerio.load(response.data);
   
-      $("div.image-container section").each(function(i, element) {
+      $("article").each(function(i, element) {
         // Save an empty result object
         var result = {};
   
           result.title = $(this)
+            .find("div.kExJtn")
             .find("a")
-            .attr("title");
+            .find("h1")
+            .text()
           result.link = $(this)
+            .find("figure")
             .find("a")
             .attr("href");
-          result.img = $(this)
+            result.img = $(this)
+            .find('figure')
             .find("img")
-            .attr("src");
-          
-       console.log(result)
+            .attr("src")
+
+            
+            // console.log(result)
        
   
         // Create a new Article using the `result` object built from scraping
@@ -60,7 +66,7 @@ router.get("/scrape", function(req, res) {
   
   // Route for getting all Articles from the db
   router.get("/articles", function(req, res) {
-    db.Article.find({}).limit(20)
+    db.Article.find({})
     .populate('note')
     .then(function(dbArticle) {
       var hbsObject = {articles: dbArticle}
@@ -69,22 +75,24 @@ router.get("/scrape", function(req, res) {
     .catch(err => res.json(err))
   });
 
-  //route to add new note to article
+  //route to add/update note and attach to article
   router.post('/articles/:id', function(req, res) {
     db.Note.create(req.body)
-    .then(note => db.Article.findOneAndUpdate({_id: req.params.id}, {$push: {note: note}}, {new: true})).then(() => {
+    .then(note => db.Article.findOneAndUpdate({_id: req.params.id}, {note: note._id}, {new: true})).then(() => {
       res.redirect('/articles')
     })
     .catch(err => res.json(err))
   });
-  
+
+
   // Route for grabbing a specific Article by id, with its note
-  router.get("/notes/:id", function(req, res) {
-    db.Article.findById({_id: req.params.id})
+  router.get("/articles/:id", function(req, res) {
+    db.Article.findOne({_id: req.params.id})
     .populate("note")
     .then(function(dbArticle) {
       let note = dbArticle.note
-      var hbsObject = {title: note.title, body: note.body}
+      let article = dbArticle
+      var hbsObject = {arttitle: article.title, title: note.title, body: note.body}
       res.render('note', hbsObject)
     })
     .catch(err => res.json(err))
@@ -92,14 +100,14 @@ router.get("/scrape", function(req, res) {
 
   //route to save article
   router.get('/saved/:id', (req, res) => {
-    db.Article.findOneAndUpdate(req.params.id, {$set: {saved: true}}, {new: true})
+    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: true}}, {new: true})
     .then( () => res.redirect('/articles'))
     .catch(err => res.json(err));
   });
 
   //route to remove article from saved
   router.get('/remove/:id', (req, res) => {
-    db.Article.findOneAndUpdate(req.params.id, {$set: {saved: false}}, {new: true})
+    db.Article.findByIdAndUpdate(req.params.id, {$set: {saved: false}}, {new: true})
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err));
   });
@@ -117,14 +125,14 @@ router.get("/scrape", function(req, res) {
 
   //route to delete an article's note
   router.get('/delete/note/:id', (req, res) => {
-    db.Note.findByIdAndRemove(req.params.id)
+    db.Note.remove(req.params.id)
     .then(() => res.redirect('/articles'))
     .catch(err => res.json(err))
   });
 
   //route to delete article
   router.get('/article/delete/:id', (req, res) => {
-    db.Article.findByIdAndRemove(req.params.id)
+    db.Article.remove(req.params.id)
     .then(() => res.redirect('/saved'))
     .catch(err => res.json(err))
   });

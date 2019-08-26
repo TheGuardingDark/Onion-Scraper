@@ -1,0 +1,13 @@
+.card-img {
+    max-height: 25%;
+    z-index: 1;
+}
+
+.card-img-overlay {
+    z-index: 2;
+}
+
+.navbar {
+    z-index: 20;
+}
+

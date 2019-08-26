@@ -1,5 +1,35 @@
-<h1>Real News or The Onion?</h1>
-    <button><a class="btn saved" data-id="{{id}}" href="/saved">See Saved Articles</a></button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/"><i class="fas fa-fan"></i></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Mongoose Web Scraper<span class="sr-only"></span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link saved" href="/saved">See Saved Articles</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/articles">All Articles</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="/scrape">Scrape for Articles</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="card">
+    <img src="https://i.kym-cdn.com/entries/icons/original/000/015/878/thatsnoneofmy.jpg" class="card-img" alt="Kermit drinks Tea">
+    <div class="card-img-overlay">
+        <h1 class="display-4 card-title">Real or The Onion?</h1>
+        <h3 class="card-text">Who can tell anymore.</h3>
+    </div>
+</div>
+
+
 <div class="scraper">
     {{#if articles}}
         <ul>
@@ -7,8 +37,6 @@
                 {{> article-block}}
             {{/each}}
         </ul>
-    {{else}}
-        <button><a class="btn scrape" data-id="{{id}}" href="/scrape">Scrape for Articles</a></button>
     {{/if}}
 </div>
 
